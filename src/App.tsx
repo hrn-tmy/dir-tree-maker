@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef, useCallback } from 'react'
 import { TreePreview } from './components/TreePreview'
 import { CopyButton } from './components/CopyButton'
 import { TemplateSelector } from './components/TemplateSelector'
@@ -15,6 +15,23 @@ const PLACEHOLDER = `src
 
 export default function App() {
   const [input, setInput] = useState(PLACEHOLDER)
+  const textareaRef = useRef<HTMLTextAreaElement>(null)
+  const previewRef = useRef<HTMLPreElement>(null)
+  const isSyncing = useRef(false)
+
+  const syncScroll = useCallback((source: 'textarea' | 'preview') => {
+    if (isSyncing.current) return
+    isSyncing.current = true
+
+    const from = source === 'textarea' ? textareaRef.current : previewRef.current
+    const to = source === 'textarea' ? previewRef.current : textareaRef.current
+    if (from && to) {
+      const ratio = from.scrollTop / (from.scrollHeight - from.clientHeight)
+      to.scrollTop = ratio * (to.scrollHeight - to.clientHeight)
+    }
+
+    requestAnimationFrame(() => { isSyncing.current = false })
+  }, [])
 
   return (
     <div className="flex flex-col h-dvh bg-[#0f1117] text-slate-200 p-6 gap-4 max-w-6xl mx-auto w-full">
@@ -31,8 +48,10 @@ export default function App() {
             </div>
           </div>
           <textarea
+            ref={textareaRef}
             value={input}
             onChange={(e) => setInput(e.target.value)}
+            onScroll={() => syncScroll('textarea')}
             spellCheck={false}
             placeholder="ディレクトリ構造を入力（インデントで階層を表現）"
             className="flex-1 resize-none bg-[#1e2330] border border-slate-700 rounded-lg text-slate-200 font-mono text-sm leading-relaxed p-4 outline-none focus:border-blue-500 transition-colors"
@@ -43,7 +62,11 @@ export default function App() {
             <label className="text-xs font-medium text-slate-500 uppercase tracking-widest">プレビュー</label>
             <CopyButton input={input} />
           </div>
-          <pre className="flex-1 bg-[#1e2330] border border-slate-700 rounded-lg font-mono text-sm leading-relaxed p-4 overflow-auto whitespace-pre">
+          <pre
+            ref={previewRef}
+            onScroll={() => syncScroll('preview')}
+            className="flex-1 bg-[#1e2330] border border-slate-700 rounded-lg font-mono text-sm leading-relaxed p-4 overflow-auto whitespace-pre"
+          >
             <TreePreview input={input} />
           </pre>
         </div>

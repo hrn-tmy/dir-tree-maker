@@ -21,12 +21,18 @@ dir-tree-maker/
 ├── docs/                        # GitHub Pages ビルド出力（自動生成）
 ├── src/                         # アプリケーションソースコード
 │   ├── components/              # React コンポーネント
-│   │   └── TreePreview.tsx      # ツリープレビュー表示コンポーネント
+│   │   ├── TreePreview.tsx      # ツリープレビュー表示コンポーネント
+│   │   ├── CopyButton.tsx       # クリップボードコピーボタン
+│   │   ├── TemplateSelector.tsx # フレームワークテンプレート選択
+│   │   └── LocalImportButton.tsx # ローカルディレクトリ読み込みボタン
 │   ├── lib/                     # ビジネスロジック・ユーティリティ
-│   │   └── parseTree.ts         # インデントテキスト→TreeNode 変換ロジック
+│   │   ├── parseTree.ts         # インデントテキスト→TreeNode 変換・テキスト生成
+│   │   └── localImport.ts       # ローカルディレクトリ→インデントテキスト変換
 │   ├── templates/               # フレームワークテンプレートデータ
-│   ├── App.tsx                  # ルートコンポーネント
+│   │   └── index.ts             # 13種のテンプレート定義・グループ管理
+│   ├── App.tsx                  # ルートコンポーネント（state・スクロール同期管理）
 │   ├── main.tsx                 # エントリーポイント
+│   ├── vite-env.d.ts            # Vite 型定義参照
 │   └── index.css                # グローバルスタイル（Tailwind ディレクティブ）
 ├── index.html                   # Vite エントリー HTML
 ├── vite.config.ts               # Vite 設定

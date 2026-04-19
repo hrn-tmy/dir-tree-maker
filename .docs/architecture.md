@@ -7,7 +7,7 @@
 | UIフレームワーク | React | ^19.2.5 |
 | 言語 | TypeScript | ^6.0.3 |
 | ビルドツール | Vite | ^8.0.8 |
-| スタイリング | Tailwind CSS | ^4.1 ※未導入 |
+| スタイリング | Tailwind CSS | ^4.1 |
 | 外部ライブラリ | なし（極力使わない方針） | — |
 
 外部ライブラリを追加する場合は、使用目的と理由を明確にして承認を得てから導入すること。
@@ -18,13 +18,14 @@
 |--------|------|------|
 | Vite dev server | ローカル開発・HMR | 導入済み |
 | `tsc` | 型チェック | 導入済み |
-| ESLint | 静的解析 | 未導入（導入時は Vite デフォルト設定を使用） |
+| ESLint | 静的解析 | 未導入（導入時は Vite デフォルト設定を使用）※ tsc による型チェックで代替中 |
 | Prettier | コードフォーマット | 未導入（必要になった時点で導入を検討） |
 
 ## デプロイ
 
-- 静的サイトとしてビルド（`npm run build` → `dist/`）
-- Vercel または GitHub Pages へのデプロイを想定
+- 静的サイトとしてビルド（`npm run build` → `docs/`）
+- GitHub Pages（main ブランチの `/docs` フォルダ）で公開
+- `vite.config.ts` に `base: '/dir-tree-maker/'` と `build: { outDir: 'docs' }` を設定済み
 - バックエンド・データベース不要
 
 ## 技術的制約

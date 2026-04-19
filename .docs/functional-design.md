@@ -48,37 +48,40 @@ type TreeNode = {
 
 ```typescript
 type Template = {
-  id: string    // 識別子（例: "nextjs", "rails"）
-  label: string // 表示名（例: "Next.js (App Router)"）
+  id: string      // 識別子（例: "nextjs-app", "rails"）
+  label: string   // 表示名（例: "Next.js (App Router)"）
   content: string // エディタに挿入するインデントテキスト
 }
+
+type TemplateGroup = {
+  label: string       // グループ表示名（例: "TypeScript"）
+  templates: Template[]
+}
 ```
+
+対応テンプレート（13種）: Next.js App Router / Next.js Pages Router / Vite+React / Nuxt.js / SvelteKit / NestJS / Express.js / FastAPI / Django / Flask / Ruby on Rails / Laravel / Spring Boot
 
 ## コンポーネント設計
 
 ```
-App
-├── Header
-│   └── タイトル
-├── EditorPane
-│   ├── textarea（入力エリア）
-│   └── TemplateSelector（テンプレート選択）
-├── PreviewPane
-│   ├── TreePreview（ツリーレンダリング）
-│   └── CopyButton（クリップボードコピー）
-└── LocalImportButton（ローカル読み込み）
+App（input state・scroll 同期ロジックを管理）
+├── TemplateSelector（テンプレート選択）
+├── LocalImportButton（ローカル読み込み）
+├── textarea（入力エリア）
+├── CopyButton（クリップボードコピー）
+└── TreePreview（ツリーレンダリング）
+    └── parseTree()（パースロジック）
 ```
 
 ### 各コンポーネントの責務
 
 | コンポーネント | 責務 |
 |---------------|------|
-| `App` | 入力テキストの state 管理、コンポーネント間のデータ受け渡し |
-| `EditorPane` | テキスト入力エリアの表示・編集イベントの発火 |
-| `TemplateSelector` | テンプレート一覧の表示・選択時にエディタへ挿入 |
-| `TreePreview` | TreeNode 配列を受け取り、ツリー記号を組み立てて表示 |
-| `CopyButton` | プレビューのテキストをクリップボードにコピー |
-| `LocalImportButton` | File System Access API でフォルダを開き、ツリーテキストを生成 |
+| `App` | `input` state の管理、scroll 同期ロジック、コンポーネント間のデータ受け渡し |
+| `TemplateSelector` | 13種のテンプレートを言語グループ別に表示・選択時に `input` を置き換え |
+| `LocalImportButton` | File System Access API でフォルダを開き、インデントテキストを生成して `input` に反映 |
+| `TreePreview` | `input` を `parseTree()` に渡し、TreeNode 配列からツリー記号を組み立てて表示 |
+| `CopyButton` | `buildTreeText()` でテキストを生成してクリップボードにコピー、2秒後に表示をリセット |
 
 ## 画面遷移図
 
@@ -88,10 +91,9 @@ App
 ┌──────────────────────────────────────────────────────┐
 │  dir-tree-maker                                      │
 ├─────────────────────────┬────────────────────────────┤
-│  [テンプレ選択 ▼]       │                [コピー]    │
-│  [ローカル読み込み]      │                            │
+│  入力 [テンプレ▼][開く] │  プレビュー       [コピー] │
 │                         │                            │
-│  textarea               │  pre (プレビュー)          │
+│  textarea ↕sync         │  pre ↕sync                 │
 │  （インデント入力）      │  src/                      │
 │                         │  ├── components/           │
 │                         │  │   └── Button.tsx        │
@@ -131,6 +133,13 @@ src/
 | 上記以外 | ファイル |
 
 ディレクトリは出力時に名前の末尾に `/` を付加する。
+
+## スクロール同期の仕様
+
+- 入力エリア（`textarea`）とプレビュー（`pre`）のスクロール位置をパーセンテージで双方向に連動する
+- スクロール割合の計算: `ratio = scrollTop / (scrollHeight - clientHeight)`
+- 連動先の `scrollTop = ratio × (scrollHeight - clientHeight)` で設定
+- 無限ループ防止のため `isSyncing` フラグ（`useRef`）を使用し、`requestAnimationFrame` でリセットする
 
 ## ローカル読み込みの仕様
 
