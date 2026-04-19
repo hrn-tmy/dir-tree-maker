@@ -59,6 +59,6 @@ docs: functional-design.md にコンポーネント設計を追記
 2. `.steering/[YYYYMMDD]-[英語タイトル]/design.md` を作成・承認
 3. `.steering/[YYYYMMDD]-[英語タイトル]/tasklist.md` を作成・承認
 4. 実装
-5. `/docs` の該当ドキュメントに影響がある場合は更新
+5. `/.docs` の該当ドキュメントに影響がある場合は更新
 
 ステアリングディレクトリのタイトルは英語・ケバブケースで記述する（例: `20260419-add-comment-output`）。

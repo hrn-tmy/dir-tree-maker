@@ -30,7 +30,7 @@ npm run preview  # ビルド成果物のプレビュー
 
 ## ドキュメントの分類
 
-### 永続的ドキュメント(/docs)
+### 永続的ドキュメント(/.docs)
 アプリケーション全体の「何を作るか」「どう作るか」を定義するドキュメント。
 アプリケーション基本設計や方針が変わらない限り更新されない。
 
@@ -104,20 +104,20 @@ npm run preview  # ビルド成果物のプレビュー
 
 #### 1. フォルダ作成
 ```bash
-mkdir -p docs
+mkdir -p .docs
 mkdir -p .steering
 ```
 
-#### 2. 永続的ドキュメントの作成（/docs）
+#### 2. 永続的ドキュメントの作成（/.docs）
 
 アプリケーション全体の設計を定義
 各ドキュメント作成後、必ず確認・承認を得てから次に進むこと
 
-1. `docs/product-requirements.md` - プロダクト要求定義書
-2. `docs/functional-design.md` - 機能設計書
-3. `docs/architecture.md` - 技術仕様書
-4. `docs/repository-structure.md` - リポジトリ構造定義書
-5. `docs/development-guidelines.md` - 開発ガイドライン
+1. `.docs/product-requirements.md` - プロダクト要求定義書
+2. `.docs/functional-design.md` - 機能設計書
+3. `.docs/architecture.md` - 技術仕様書
+4. `.docs/repository-structure.md` - リポジトリ構造定義書
+5. `.docs/development-guidelines.md` - 開発ガイドライン
 
 **重要:** 1ファイルごとに作成後、必ず確認・承認を得てから次のファイル作成を行うこと
 
@@ -141,8 +141,8 @@ TypeScriptとTailwindCSSを使うように設定する
 
 ### 機能追加・修正時の手順
 
-- 永続的ドキュメント(`/docs`)への影響を確認
-- 変更が基本設計に影響する場合は`/docs`を更新
+- 永続的ドキュメント(`/.docs`)への影響を確認
+- 変更が基本設計に影響する場合は`/.docs`を更新
 
 ## 図表・ダイアグラムの記載ルール
 
